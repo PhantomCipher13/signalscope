@@ -1,7 +1,12 @@
 # SignalScope — Vercel production requirements (Linux CPU, Python 3.11)
-# This file is used by Vercel's @vercel/python runtime ONLY.
+# Used by Vercel's @vercel/python runtime ONLY.
 # Local Windows development uses the root requirements.txt instead.
-# DirectML is NOT listed here — it only works on Windows and is not needed for Vercel.
+#
+# CRITICAL: Use --extra-index-url (NOT --index-url) for PyTorch CPU wheels.
+# --index-url would REPLACE PyPI entirely, breaking timm/sklearn/supabase.
+# --extra-index-url ADDS the PyTorch wheel index alongside PyPI.
+
+--extra-index-url https://download.pytorch.org/whl/cpu
 
 # ── Web framework ─────────────────────────────────────────────────────────────
 fastapi>=0.111.0,<0.150.0
@@ -15,27 +20,26 @@ pyyaml>=6.0.1,<7.0
 # ── Typing / validation ───────────────────────────────────────────────────────
 pydantic>=2.7.0,<3.0
 
-# ── PyTorch CPU-only (Linux x86_64) ──────────────────────────────────────────
-# Must use --index-url to get the CPU-only builds.
-# The default PyPI torch includes CUDA (~2GB) — far too large for Vercel.
---index-url https://download.pytorch.org/whl/cpu
+# ── PyTorch CPU-only (Linux x86_64, from PyTorch wheel index) ────────────────
+# +cpu suffix ensures pip picks the CPU-only wheel from the extra index.
+# Default PyTorch on PyPI includes CUDA (~2GB) — far too large for Vercel.
 torch==2.4.1+cpu
 torchvision==0.19.1+cpu
 
-# ── Pretrained models ─────────────────────────────────────────────────────────
---extra-index-url https://pypi.org/simple/
+# ── Pretrained models (PyPI) ──────────────────────────────────────────────────
 timm>=1.0.0,<2.0.0
 
-# ── Image processing ──────────────────────────────────────────────────────────
+# ── Image processing (PyPI) ───────────────────────────────────────────────────
 Pillow>=10.0.0,<12.0
 
-# ── Numerics ─────────────────────────────────────────────────────────────────
+# ── Numerics (PyPI) ──────────────────────────────────────────────────────────
 numpy>=1.24.0,<3.0
 scikit-learn>=1.3.0,<2.0
 
-# ── Utilities ────────────────────────────────────────────────────────────────
+# ── Utilities (PyPI) ─────────────────────────────────────────────────────────
 tqdm>=4.66.0,<5.0
 httpx>=0.27.0,<0.30.0
 
-# ── Supabase persistence ───────────────────────────────────────────────────────
+# ── Supabase persistence (PyPI) ───────────────────────────────────────────────
 supabase>=2.0.0
+websockets>=12.0
