@@ -20,6 +20,10 @@
       "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/results/:id"
     },
     {
+      "source": "/admin/:path*",
+      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/admin/:path*"
+    },
+    {
       "source": "/docs",
       "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/docs"
     },
