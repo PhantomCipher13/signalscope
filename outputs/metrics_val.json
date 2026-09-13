@@ -1,0 +1,21 @@
+{
+  "split": "val",
+  "checkpoint": "models\\best_checkpoint.pt",
+  "checkpoint_epoch": 0,
+  "metrics": {
+    "roc_auc": 0.638889,
+    "accuracy": 0.5,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "false_positive_rate": 0.0,
+    "tp": 0,
+    "fp": 0,
+    "tn": 6,
+    "fn": 6,
+    "n_samples": 12,
+    "n_real": 6,
+    "n_synthetic": 6,
+    "threshold": 0.5
+  }
+}

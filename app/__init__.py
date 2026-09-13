@@ -1,0 +1,1 @@
+"""SignalScope — FastAPI application package."""

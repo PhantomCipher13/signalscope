@@ -1,0 +1,95 @@
+# ============================================================
+# SignalScope — Reliability Engine Configuration
+# Phase 3 update — calibration section added.
+# Thresholds MUST be selected using validation data only.
+# Null values mean "threshold not yet configured".
+# DO NOT set numeric thresholds without validation evidence.
+# ============================================================
+
+# ── Calibration ──────────────────────────────────────────────
+calibration:
+  # Number of equal-width bins for ECE calculation.
+  # 15 is a standard default; can be changed before validation.
+  ece_n_bins: 15
+
+  # Policy: temperature is fitted on validation data only.
+  # Never fit temperature on test or unseen-generator data.
+  # After fitting, save to: outputs/calibration_<experiment_id>.json
+  temperature_save_dir: "outputs/"
+
+  # Thresholds below are policy decisions, NOT hard scientific facts.
+  # They must be determined by validation experiments.
+  # Leave as null until experimental evidence supports a value.
+  # The system will report 'threshold_not_configured' when null.
+  ece_threshold: null          # e.g. 0.05 — only set after validation
+  brier_threshold: null        # e.g. 0.10 — only set after validation
+
+# ── Multi-version reliability analysis ──────────────────────
+# The system analyses the original image plus controlled
+# transformed versions, then measures prediction stability.
+reliability:
+
+  # Number of perturbed versions to generate per image.
+  # Higher = more stable estimate but slower.
+  n_versions: 10                     # Phase 2 will tune via validation
+
+  # Minimum number of observations required before stability can
+  # be computed. With fewer observations, status = insufficient_evidence.
+  # null = threshold not configured. Set after validation experiments.
+  minimum_observations: null         # e.g. 5 — set after validation
+
+  # ── Controlled transforms applied to each version ─────────
+  transforms:
+    jpeg_quality_range: [55, 95]
+    resize_scale_range: [0.85, 1.15]
+    gaussian_noise_std: 0.015
+    # Each version samples randomly within these ranges.
+
+  # ── Stability metric ──────────────────────────────────────
+  # stability = 1 - std(probabilities)
+  # IMPORTANT: std with ddof=1 requires n>=2.
+  # For n=1, std=0 is mathematically defined but does NOT indicate
+  # stability — it just means there is only one observation.
+  stability_metric: "std"            # "std" | "entropy" | "range"
+
+  # ── Stability threshold ───────────────────────────────────
+  # Predictions are considered "stable" when std < stability_threshold.
+  # null = threshold not yet configured from validation data.
+  # The system will report 'threshold_not_configured' when null.
+  stability_threshold: null          # e.g. 0.10 — set after validation experiments
+
+  # ── Abstention thresholds ─────────────────────────────────
+  # IMPORTANT: These are placeholder values for structure only.
+  # Do NOT use these as production thresholds.
+  # Tune all thresholds on validation data in Phase 2.
+  # Never use the unseen test set for threshold selection.
+  abstention:
+    # Abstain ("Uncertain") when the calibrated probability is
+    # within this margin of 0.5 (low confidence).
+    # null = not configured.
+    confidence_margin: null          # placeholder — set after validation
+
+    # Abstain when prediction stability (std across versions)
+    # exceeds this threshold. null = not configured.
+    stability_threshold: null        # placeholder — set after validation
+
+  # ── Adaptive stress testing ───────────────────────────────
+  # Version 1: uncertainty-guided candidate ordering / early stop.
+  # This is NOT advanced information-gain optimisation.
+  # Fixed stress testing is always available as fallback.
+  adaptive:
+    enabled: true
+    # Early-stop if uncertainty is already clearly resolved.
+    early_stop_margin: null          # placeholder — tune in Phase 2
+    max_probes: 15                   # upper bound on adaptive probes
+    fallback_to_fixed: true          # always fall back if adaptive fails
+
+# ── Optional / experimental ───────────────────────────────────
+# These must never block the core analysis pipeline.
+experimental:
+  dct_analysis:
+    enabled: false                   # Phase 2+ optional
+  embedding_consistency:
+    enabled: false                   # Phase 2+ optional
+  local_manipulation_analysis:
+    enabled: false                   # Phase 2+ optional

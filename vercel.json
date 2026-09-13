@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "name": "signalscope",
+  "outputDirectory": "frontend",
+  "rewrites": [
+    {
+      "source": "/analyze",
+      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/analyze"
+    },
+    {
+      "source": "/health",
+      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/health"
+    },
+    {
+      "source": "/feedback",
+      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/feedback"
+    },
+    {
+      "source": "/results/:id",
+      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/results/:id"
+    },
+    {
+      "source": "/docs",
+      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/docs"
+    },
+    {
+      "source": "/redoc",
+      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/redoc"
+    },
+    {
+      "source": "/openapi.json",
+      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/openapi.json"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}

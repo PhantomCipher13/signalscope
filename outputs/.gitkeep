@@ -1,0 +1,2 @@
+# Runtime outputs (heatmaps, result JSONs) are excluded via .gitignore.
+# Phase 2+ inference will write here.

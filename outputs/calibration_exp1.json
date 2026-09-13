@@ -1,0 +1,15 @@
+{
+  "temperature": 2.875555520754125,
+  "is_fitted": true,
+  "_fitted_on_split": "validation",
+  "calibration_result": {
+    "temperature": 2.875555520754125,
+    "status": "calibrated",
+    "fitted_on": "validation",
+    "n_samples_fitted": 3000,
+    "ece_before": 0.10400691462121904,
+    "ece_after": 0.04802039679236652,
+    "brier_before": 0.1236232166299251,
+    "brier_after": 0.10861345272075429
+  }
+}

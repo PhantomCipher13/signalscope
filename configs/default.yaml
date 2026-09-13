@@ -1,0 +1,109 @@
+# ============================================================
+# SignalScope — Default Configuration (Phase 1 updated)
+# ============================================================
+
+app:
+  name: "SignalScope"
+  version: "0.2.0"
+  description: "Telling Real From Synthetic in the Age of Generative Media"
+  host: "0.0.0.0"
+  port: 8000
+
+logging:
+  level: "INFO"
+  log_dir: "logs"
+  filename: "signalscope.log"
+  max_bytes: 10485760    # 10 MB
+  backup_count: 5
+  format: "%(asctime)s [%(levelname)s] %(name)s - %(message)s"
+
+seed:
+  value: 42
+  deterministic: true
+
+paths:
+  models_dir: "models"
+  data_dir: "data"
+  splits_dir: "data/splits"
+  outputs_dir: "outputs"
+  logs_dir: "logs"
+  experiments_dir: "experiments"
+  # dataset_root: path to the root directory holding real/fake image folders
+  # Set this before running manifest creation or training.
+  dataset_root: null   # REQUIRED — set to actual dataset path before training
+
+dataset:
+  # Manifest CSV produced by scripts/create_manifest.py
+  manifest_path: "data/splits/manifest.csv"
+  # Supported image extensions (lowercase)
+  image_extensions: [".jpg", ".jpeg", ".png", ".bmp", ".webp"]
+  # Label convention: 0 = real, 1 = synthetic/AI-generated
+  label_real: 0
+  label_synthetic: 1
+  # Class directory names (case-insensitive substring match)
+  real_dir_keywords: ["real", "genuine", "authentic", "original", "nature", "0_real"]
+  synthetic_dir_keywords: ["fake", "ai", "synthetic", "generated", "gan", "diffusion", "1_fake"]
+
+training:
+  # Device: "auto" selects CUDA if available, else CPU
+  device: "auto"
+  batch_size: 32
+  epochs: 20
+  # Learning rate for AdamW optimizer
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  # LR scheduler: "cosine" | "step" | null
+  lr_scheduler: "cosine"
+  # Gradient clipping (null to disable)
+  grad_clip: 1.0
+  # Number of DataLoader workers (0 = main process; safe for Windows)
+  num_workers: 0
+  # Pin memory (disable on CPU-only runs to avoid overhead)
+  pin_memory: false
+  # Save only the best validation checkpoint
+  save_best_only: true
+  # Metric used to select the best checkpoint
+  best_metric: "roc_auc"   # "roc_auc" | "accuracy" | "f1"
+  # Checkpoint output directory
+  checkpoint_dir: "models"
+  checkpoint_name: "best_checkpoint.pt"
+  # Training history CSV
+  history_path: "outputs/training_history.csv"
+
+  # Split fractions (must sum to 1.0 if no unseen-generator split)
+  # If generator metadata is available, use generator_split instead.
+  split:
+    train: 0.70
+    val: 0.15
+    test: 0.15
+    # Strategy: "random" | "generator_separated"
+    strategy: "random"
+    # When strategy = "generator_separated", list generators held out for test
+    # unseen_generators: []   # filled after dataset inspection
+
+# model: see configs/model.yaml
+# augmentation: see configs/augmentation.yaml
+# reliability: see configs/reliability.yaml
+
+# ── Database ─────────────────────────────────────────────────────────────────
+database:
+  # Backend: "sqlite" (default) | "postgresql" (future)
+  backend: "sqlite"
+  # Relative to project root. Never commit this file to git.
+  path: "data/signalscope.db"
+  # Image binary data is NEVER stored in the database.
+  # Only hashes (SHA-256), paths, metadata, and analysis results.
+
+# ── Dataset / Experiment Identity ────────────────────────────────────────────
+experiment:
+  # Identifies training experiments for reproducibility
+  generator: "stable_diffusion_v1.4"     # primary synthetic generator in CIFAKE
+  dataset: "CIFAKE"
+  # evaluation_type must be "in_distribution" for CIFAKE
+  # (same SD v1.4 generator in both train and test)
+  evaluation_type: "in_distribution"
+  manifests:
+    train: "data/manifests/train.csv"
+    validation: "data/manifests/validation.csv"
+    # NOTE: test_indistribution.csv is in-distribution — NOT unseen-generator
+    test: "data/manifests/test_indistribution.csv"

@@ -1,0 +1,40 @@
+# ============================================================
+# SignalScope — Model Configuration
+# Phase 0 Foundation — values are architecture defaults.
+# Actual trained values will be set in Phase 1.
+# ============================================================
+
+model:
+  # ── Architecture ────────────────────────────────────────
+  # Starting candidate from architecture decision.
+  # A small bake-off may be run in Phase 1 before finalising.
+  architecture: "efficientnet_b3"   # placeholder — confirmed in Phase 1
+  pretrained: true                   # ImageNet pretrained backbone
+  num_classes: 2                     # [real, ai_generated]
+
+  # ── Input ───────────────────────────────────────────────
+  input_size: 300                    # EfficientNet-B3 native resolution
+  input_channels: 3
+
+  # ── Classification head ─────────────────────────────────
+  dropout_rate: 0.3                  # Phase 1 will tune via validation
+
+  # ── Checkpoint ──────────────────────────────────────────
+  # Path is relative to the project root.
+  # Leave null until a trained checkpoint is produced in Phase 1.
+  checkpoint_path: null
+
+  # ── Inference ───────────────────────────────────────────
+  device: "auto"                     # "auto" | "cpu" | "cuda" | "mps"
+  batch_size: 1                      # single-image inference at serving time
+
+# ── Calibration (Phase 1+) ──────────────────────────────────
+# Temperature scaling is fit on validation data only.
+# The value below is the uninitialised default (T=1.0 = no scaling).
+# Never update this with test-set data.
+calibration:
+  temperature: 1.0                   # updated after Phase 1 calibration
+  # Metrics below are measured results, not performance targets.
+  # Do not pre-fill them; they will be recorded after calibration.
+  ece: null
+  brier_score: null

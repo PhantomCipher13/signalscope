@@ -1,0 +1,52 @@
+# SignalScope Requirements
+# Updated for Phase 2 — Full API + Analysis Pipeline
+# Python 3.11.9 (Windows x64)
+# Run with: C:\Python311\python.exe -m pip install -r requirements.txt
+
+# ── Web framework ────────────────────────────────────────────────────────────
+fastapi>=0.111.0,<0.150.0
+uvicorn[standard]>=0.29.0,<0.60.0
+python-multipart>=0.0.9         # Required for FastAPI file upload (POST /analyze)
+python-dotenv>=1.0.0            # Load .env for local development
+
+# ── Configuration ────────────────────────────────────────────────────────────
+pyyaml>=6.0.1,<7.0
+
+# ── HTTP client ───────────────────────────────────────────────────────────────
+httpx>=0.27.0,<0.30.0
+requests>=2.31.0,<3.0           # For API testing and client scripts
+
+# ── Typing / validation ───────────────────────────────────────────────────────
+pydantic>=2.7.0,<3.0
+
+# ── ML core ──────────────────────────────────────────────────────────────────
+# Install PyTorch from pytorch.org for your platform (CPU or CUDA).
+# CPU-only example:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+# CUDA 12.1 example:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+# DirectML (AMD iGPU, Windows):
+#   pip install torch-directml
+torch>=2.1.0
+torchvision>=0.16.0
+
+# ── Pretrained models ─────────────────────────────────────────────────────────
+timm>=1.0.0,<2.0.0              # EfficientNet-B0 backbone
+
+# ── Image processing ──────────────────────────────────────────────────────────
+Pillow>=10.0.0,<12.0            # Image decode/encode + EXIF extraction
+
+# ── Numerics / evaluation ─────────────────────────────────────────────────────
+numpy>=1.24.0,<3.0
+scikit-learn>=1.3.0,<2.0
+
+# ── Progress / CLI ────────────────────────────────────────────────────────────
+tqdm>=4.66.0,<5.0
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest>=8.2.0,<10.0
+pytest-asyncio>=0.23.0,<2.0
+
+# ── Optional Phase 3+ ─────────────────────────────────────────────────────────
+# supabase>=2.0.0               # Supabase cloud DB (Phase 7 — set env vars)
+# c2pa-python                   # C2PA Content Credentials reading (Phase 6)

@@ -1,0 +1,71 @@
+# ── Secrets ────────────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.production
+.env*.local
+
+# ── Python ─────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.whl
+
+# ── Virtual environments ────────────────────────────────────────────────────────
+venv/
+.venv/
+env/
+.env/
+ENV/
+
+# ── Testing / Coverage ─────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+
+# ── Logs ───────────────────────────────────────────────────────────────────────
+logs/
+*.log
+cf_tunnel.log
+
+# ── IDE ─────────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# ── Data / Datasets (too large for GitHub) ─────────────────────────────────────
+data/raw/
+data/manifests/
+data/*.db-shm
+data/*.db-wal
+
+# ── Training artifacts (too large, not needed for deployment) ──────────────────
+outputs/*.npz
+outputs/training_history.csv
+models/best_checkpoint.pt
+test_large.jpg
+scratch/
+
+# ── Node (if any frontend tooling is added) ────────────────────────────────────
+node_modules/
+
+# ── Vercel ─────────────────────────────────────────────────────────────────────
+.vercel/
+
+# ── Temporary ──────────────────────────────────────────────────────────────────
+*.tmp
+*.temp
+*.bak

@@ -1,0 +1,77 @@
+# ============================================================
+# SignalScope — Augmentation Configuration
+# Phase 0 Foundation — structure defined, values are defaults.
+# These will be tuned in Phase 1 training experiments.
+# ============================================================
+
+# ── Training augmentations ──────────────────────────────────
+# Degradation-aware training is a core design requirement.
+# All probability values and ranges below are starting defaults
+# and must be validated on the train/validation split in Phase 1.
+train:
+  resize:
+    enabled: true
+    min_size: 256
+    max_size: 512
+
+  random_crop:
+    enabled: true
+    size: 300                        # match model.input_size
+
+  horizontal_flip:
+    enabled: true
+    probability: 0.5
+
+  # ── Degradation augmentations (core requirement) ──────────
+  jpeg_compression:
+    enabled: true
+    quality_range: [40, 95]          # simulate real-world compression
+    probability: 0.5
+
+  random_resize:
+    # Simulate upscaling/downscaling artefacts
+    enabled: true
+    scale_range: [0.5, 1.5]
+    probability: 0.3
+
+  gaussian_noise:
+    enabled: false                   # Phase 1: enable and tune
+    std_range: [0.0, 0.05]
+    probability: 0.2
+
+  gaussian_blur:
+    enabled: false                   # Phase 1: enable and tune
+    kernel_range: [3, 7]
+    probability: 0.2
+
+  color_jitter:
+    enabled: true
+    brightness: 0.1
+    contrast: 0.1
+    saturation: 0.1
+    hue: 0.05
+    probability: 0.3
+
+  # ── Normalisation ─────────────────────────────────────────
+  # ImageNet statistics used with pretrained backbone.
+  normalize:
+    mean: [0.485, 0.456, 0.406]
+    std:  [0.229, 0.224, 0.225]
+
+# ── Validation / inference augmentations ────────────────────
+# Minimal transforms: resize + centre crop + normalise only.
+val:
+  resize:
+    size: 320                        # slightly larger than crop
+
+  center_crop:
+    size: 300                        # match model.input_size
+
+  normalize:
+    mean: [0.485, 0.456, 0.406]
+    std:  [0.229, 0.224, 0.225]
+
+# ── Test-time augmentation (Phase 1+ optional) ──────────────
+tta:
+  enabled: false                     # Phase 1 decision
+  n_augmentations: 5

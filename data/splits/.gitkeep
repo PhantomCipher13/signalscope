@@ -1,0 +1,3 @@
+# This directory holds train/validation/test split index files.
+# Split files (.json, .csv, .parquet) are excluded via .gitignore.
+# Phase 1 will generate splits with strict generator-separated separation.

@@ -1,0 +1,24 @@
+{
+  "split": "test_indistribution",
+  "evaluation_type": "in_distribution",
+  "checkpoint": "models\\fast_baseline_checkpoint.pt",
+  "checkpoint_epoch": 4,
+  "manifest": "data\\manifests\\test_indistribution.csv",
+  "n_samples": 20000,
+  "metrics": {
+    "roc_auc": 0.931902,
+    "accuracy": 0.8501,
+    "precision": 0.885064,
+    "recall": 0.8047,
+    "f1": 0.842971,
+    "false_positive_rate": 0.1045,
+    "tp": 8047,
+    "fp": 1045,
+    "tn": 8955,
+    "fn": 1953,
+    "n_samples": 20000,
+    "n_real": 10000,
+    "n_synthetic": 10000,
+    "threshold": 0.5
+  }
+}

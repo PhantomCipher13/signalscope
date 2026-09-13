@@ -1,0 +1,3 @@
+# This directory is tracked by Git but its contents are not.
+# Model checkpoint files (.pt, .pth, .ckpt, etc.) are excluded via .gitignore.
+# Phase 1 will produce trained checkpoints here.
