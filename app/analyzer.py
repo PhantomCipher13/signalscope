@@ -130,12 +130,18 @@ class SignalScopeAnalyzer:
         except Exception as e:
             status["errors"].append(f"Calibration load failed: {e}")
 
-        # Experiment ID from DB
+        # Experiment ID from DB (SQLite, optional — non-fatal if /tmp or absent)
         try:
+            import os as _os_inner
             from src.database.connection    import DatabaseManager
             from src.database.repositories  import list_experiments
             from src.database.schema        import init_db
-            db_path = _PROJECT_ROOT / "data" / "signalscope.db"
+            # SIGNALSCOPE_SQLITE_PATH allows Vercel to redirect to /tmp
+            _sqlite_override = _os_inner.environ.get("SIGNALSCOPE_SQLITE_PATH")
+            if _sqlite_override:
+                db_path = Path(_sqlite_override)
+            else:
+                db_path = _PROJECT_ROOT / "data" / "signalscope.db"
             if db_path.exists():
                 db = DatabaseManager(str(db_path))
                 db.connect()
@@ -375,7 +381,12 @@ class SignalScopeAnalyzer:
         from src.database.schema       import init_db
         from src.database.repositories import insert_analysis_run
 
-        db_path = _PROJECT_ROOT / "data" / "signalscope.db"
+        import os as _os_persist
+        _sqlite_override = _os_persist.environ.get("SIGNALSCOPE_SQLITE_PATH")
+        if _sqlite_override:
+            db_path = Path(_sqlite_override)
+        else:
+            db_path = _PROJECT_ROOT / "data" / "signalscope.db"
         db = DatabaseManager(str(db_path))
         db.connect()
         init_db(db)

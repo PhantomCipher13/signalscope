@@ -1,50 +1,18 @@
 {
   "version": 2,
-  "name": "signalscope",
-  "outputDirectory": "frontend",
-  "rewrites": [
+  "builds": [
     {
-      "source": "/analyze",
-      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/analyze"
-    },
-    {
-      "source": "/health",
-      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/health"
-    },
-    {
-      "source": "/feedback",
-      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/feedback"
-    },
-    {
-      "source": "/results/:id",
-      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/results/:id"
-    },
-    {
-      "source": "/admin/:path*",
-      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/admin/:path*"
-    },
-    {
-      "source": "/docs",
-      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/docs"
-    },
-    {
-      "source": "/redoc",
-      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/redoc"
-    },
-    {
-      "source": "/openapi.json",
-      "destination": "https://matching-roles-stereo-ringtones.trycloudflare.com/openapi.json"
+      "src": "api/index.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
     }
   ],
-  "headers": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-XSS-Protection", "value": "1; mode=block" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
-      ]
+      "src": "/(.*)",
+      "dest": "/api/index.py"
     }
   ]
 }

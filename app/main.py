@@ -359,8 +359,9 @@ def _save_feedback(
     from src.database.connection   import DatabaseManager
     from src.database.schema       import init_db
 
-    db_path = _PROJECT_ROOT / "data" / "signalscope.db"
-    db = DatabaseManager(str(db_path))
+    import os as _os_fb
+    _sqlite_path_fb = _os_fb.environ.get("SIGNALSCOPE_SQLITE_PATH") or str(_PROJECT_ROOT / "data" / "signalscope.db")
+    db = DatabaseManager(_sqlite_path_fb)
     db.connect()
     init_db(db)
 
@@ -463,7 +464,9 @@ async def list_feedback(request: Request, limit: int = 50, format: str = "json")
     from src.database.connection   import DatabaseManager
     from src.database.schema       import init_db
 
-    db = DatabaseManager(str(_PROJECT_ROOT / "data" / "signalscope.db"))
+    import os as _os_admin
+    _sqlite_path = _os_admin.environ.get("SIGNALSCOPE_SQLITE_PATH") or str(_PROJECT_ROOT / "data" / "signalscope.db")
+    db = DatabaseManager(_sqlite_path)
     db.connect()
     init_db(db)
 
@@ -512,7 +515,9 @@ async def list_analyses(request: Request, limit: int = 50) -> JSONResponse:
     from src.database.connection import DatabaseManager
     from src.database.schema     import init_db
 
-    db = DatabaseManager(str(_PROJECT_ROOT / "data" / "signalscope.db"))
+    import os as _os_admin2
+    _sqlite_path2 = _os_admin2.environ.get("SIGNALSCOPE_SQLITE_PATH") or str(_PROJECT_ROOT / "data" / "signalscope.db")
+    db = DatabaseManager(_sqlite_path2)
     db.connect()
     init_db(db)
     try:
