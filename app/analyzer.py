@@ -82,6 +82,21 @@ class SignalScopeAnalyzer:
         ckpt  = checkpoint_path  or _DEFAULT_CHECKPOINT
         cal_f = calibration_path or _DEFAULT_CALIBRATION
 
+        if not ckpt.exists():
+            release_url = "https://github.com/PhantomCipher13/signalscope/releases/download/signalscope-sih-2026-final/signalscope_b0_v3.pt"
+            try:
+                import urllib.request
+                logger.info(f"Downloading V3 model weights from release...")
+                ckpt.parent.mkdir(parents=True, exist_ok=True)
+                urllib.request.urlretrieve(release_url, str(ckpt))
+                logger.info(f"Downloaded {ckpt.name} successfully.")
+            except Exception as dl_err:
+                logger.warning(f"Could not download V3 weights: {dl_err}")
+                fallback = _PROJECT_ROOT / "models" / "fast_baseline_checkpoint.pt"
+                if fallback.exists():
+                    ckpt = fallback
+                    logger.info(f"Using bundled fallback checkpoint: {fallback.name}")
+
         status = {
             "model_loaded":       False,
             "calibration_loaded": False,
