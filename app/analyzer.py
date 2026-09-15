@@ -41,8 +41,8 @@ from PIL import Image
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 # Defaults — resolved relative to project root
-_DEFAULT_CHECKPOINT  = _PROJECT_ROOT / "models" / "fast_baseline_checkpoint.pt"
-_DEFAULT_CALIBRATION = _PROJECT_ROOT / "outputs" / "calibration_exp1.json"
+_DEFAULT_CHECKPOINT  = _PROJECT_ROOT / "models" / "signalscope_b0_v3.pt"
+_DEFAULT_CALIBRATION = _PROJECT_ROOT / "models" / "calibration_v3.json"
 
 
 class SignalScopeAnalyzer:
