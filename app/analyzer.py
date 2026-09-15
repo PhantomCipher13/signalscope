@@ -34,8 +34,11 @@ import time
 from pathlib import Path
 from typing import Optional
 
+import logging
 import torch
 from PIL import Image
+
+logger = logging.getLogger("analyzer")
 
 # ── Project root ──────────────────────────────────────────────────────────────
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
