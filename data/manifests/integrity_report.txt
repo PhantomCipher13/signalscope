@@ -1,0 +1,38 @@
+=== SignalScope Dataset Integrity Report ===
+Manifest: C:\Users\Admin\Downloads\Internal hackathon\signalscope\data\manifests\master_manifest.csv
+Records:  120000
+
+--- Check 1: Missing Files ---
+  [PASS] All 120000 manifest paths exist
+
+--- Check 2: Duplicate Manifest Paths ---
+  [PASS] No duplicate paths
+
+--- Check 3: Label Validity ---
+  [PASS] All labels valid
+
+--- Check 4: Corrupt Images (sampling 200) ---
+  [PASS] 200 images checked, 0 corrupt
+
+--- Check 5: Impossible Dimensions ---
+  [PASS] No impossible dimensions (or dimensions not yet in manifest)
+
+--- Check 6: Missing Generator Where Known ---
+  [PASS] Generator info complete where expected
+
+--- Check 7: Empty Directories ---
+  [PASS] No empty directories in data/raw/
+
+--- Check 8: Exact Duplicates by MD5 (sampling 1000) ---
+  [PASS] No exact duplicates in 1000-image sample
+
+--- Dataset-Level Summary ---
+  CIFAKE: 120000 images
+  split=test: 20000 images
+  split=train: 100000 images
+  label=FAKE: 60000 images
+  label=REAL: 60000 images
+  generator=cifar10_real: 60000 images
+  generator=stable_diffusion_v1.4: 60000 images
+
+=== Integrity Check Complete ===
