@@ -1,0 +1,24 @@
+{
+  "split": "test_indistribution",
+  "evaluation_type": "in_distribution",
+  "checkpoint": "experiments\\cifake_97k_v3\\signalscope_b0_v3.pt",
+  "checkpoint_epoch": 0,
+  "manifest": "data\\manifests\\test_indistribution.csv",
+  "n_samples": 20000,
+  "metrics": {
+    "roc_auc": 0.97991,
+    "accuracy": 0.9192,
+    "precision": 0.885294,
+    "recall": 0.9632,
+    "f1": 0.922605,
+    "false_positive_rate": 0.1248,
+    "tp": 9632,
+    "fp": 1248,
+    "tn": 8752,
+    "fn": 368,
+    "n_samples": 20000,
+    "n_real": 10000,
+    "n_synthetic": 10000,
+    "threshold": 0.5
+  }
+}
