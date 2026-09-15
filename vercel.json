@@ -1,19 +1,4 @@
 {
   "version": 2,
-  "buildCommand": null,
-  "outputDirectory": "frontend",
-  "functions": {
-    "api/index.py": {
-      "maxDuration": 60,
-      "memory": 512
-    }
-  },
-  "rewrites": [
-    { "source": "/health",          "destination": "/api/index" },
-    { "source": "/analyze",         "destination": "/api/index" },
-    { "source": "/feedback",        "destination": "/api/index" },
-    { "source": "/results/:path*",  "destination": "/api/index" },
-    { "source": "/docs",            "destination": "/api/index" },
-    { "source": "/openapi.json",    "destination": "/api/index" }
-  ]
+  "outputDirectory": "frontend"
 }
