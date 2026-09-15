@@ -1,0 +1,21 @@
+# Exclude Python runtime — Vercel serves ONLY the static frontend (outputDirectory: frontend)
+requirements.txt
+requirements_cloud.txt
+api/
+app/
+src/
+scripts/
+models/
+experiments/
+data/
+tests/
+configs/
+outputs/
+docs/
+*.py
+*.pt
+*.db
+*.log
+*.env
+.env*
+scratch/
