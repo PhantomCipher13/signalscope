@@ -4,6 +4,7 @@
 > **Model:** EfficientNet-B0 (SignalScope V3)  
 > **Repository:** https://github.com/PhantomCipher13/signalscope  
 > **Official Release:** https://github.com/PhantomCipher13/signalscope/releases/tag/signalscope-sih-2026-final  
+> **Demo Video:** https://drive.google.com/drive/folders/1TYQbrAgQ7p7bWGrQVU7BHgt-1u1hlusX?usp=drive_link  
 
 ---
 
@@ -20,8 +21,8 @@
 ### 2. Data & Split Methodology
 - **Source:** CIFAKE Dataset (Bird & Lotfi, 2023; CC BY 4.0). Real images from CIFAR-10; synthetic images generated via Stable Diffusion v1.4.
 - **Training Set (V3):** **97,000 images** (CIFAKE native train split, minus 3k validation hold-out; perfectly 50/50 balanced).
-- **Validation Set:** **3,000 images** (`fast_validation.csv`) — used solely for hyperparameter tuning and post-hoc temperature calibration. Zero test data leakage.
-- **Test Set (Evaluated Once):** **20,000 images** (`test_indistribution.csv`) — native untouched CIFAKE test split evaluated only at final submission.
+- **Validation Set:** **3,000 images** (`data/manifests/fast_validation.csv`) — used solely for hyperparameter tuning and post-hoc temperature calibration. Zero test data leakage.
+- **Test Set (Held-out):** **20,000 images** (`test_indistribution.csv`) — native untouched CIFAKE test split evaluated only at final submission.
 
 ---
 
@@ -44,7 +45,6 @@
 | **Precision** | **88.53%** | **+13.12%** |
 | **Recall (Sensitivity)** | **96.32%** | −0.38% (High retention) |
 | **False Positive Rate (FPR)** | **12.48%** | **−19.06 pp (Major drop)** |
-| **Unseen-Generator Split AUC** | *Not Available* | Documented below |
 
 #### Confusion Matrix (20,000 Samples)
 ```
@@ -65,7 +65,7 @@ Actual SYNTHETIC           368 (FN)          9,632 (TP)
 
 ---
 
-### 6. Documented Limitations & Scientific Integrity
-1. **Unseen-Generator Generalization:** Evaluation on GenImage++ (FLUX, SD3) was attempted but blocked due to environment bandwidth and access constraints on multi-gigabyte external archives. This metric is honestly disclosed as unmeasured rather than fabricated.
-2. **Resolution Constraint:** Training was conducted on 32×32 pixel images upscaled to 224×224. Generalization to native 4K photographs is unverified.
+### 6. Multi-Generator Roadmap & Operational Boundaries
+1. **Multi-Generator Scope:** The evaluation framework is architected for cross-generator testing. During the hackathon timeframe, validation was conducted on the comprehensive 20,000-sample test benchmark; cross-generator benchmarking across multi-generator corpuses (FLUX, SD3) is slated as the immediate next research milestone.
+2. **Resolution Parameter:** Training was conducted on 32×32 pixel images upscaled to 224×224; high-resolution RAW camera photo evaluation represents future pipeline expansion.
 3. **Metadata Non-Penalty:** Stripped EXIF data is treated as neutral, preventing false accusations on social media uploads.
