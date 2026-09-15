@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SignalScope — Real vs AI Detection</title>
-    <meta name="description" content="SignalScope: AI-powered forensic tool for detecting AI-generated images. EfficientNet-B0 detector with calibrated probability, robustness probes, Grad-CAM, and provenance analysis.">
+    <title>SignalScope — Telling Real From Synthetic</title>
+    <meta name="description" content="SignalScope: AI-powered forensic tool for detecting AI-generated images. Calibrated confidence, robustness testing, visual explanations, and provenance analysis.">
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
     <!-- API base URL: empty = same-origin (local). Overridden by config.js in production. -->
     <script src="/static/js/config.js" onerror="void(0)"></script>
@@ -14,222 +17,340 @@
     <!-- Header -->
     <header class="header">
         <div class="container">
-            <div class="logo">
-                <span class="logo-icon">◎</span>
-                <span class="logo-text">SignalScope</span>
+            <div class="header-inner">
+                <div class="logo">
+                    <div class="logo-mark" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <circle cx="8" cy="8" r="3"/>
+                            <circle cx="8" cy="8" r="6.5" stroke-width="1"/>
+                        </svg>
+                    </div>
+                    <span class="logo-text">SignalScope</span>
+                </div>
+                <p class="tagline">Telling Real From Synthetic</p>
             </div>
-            <p class="tagline">Telling Real From Synthetic in the Age of Generative Media</p>
         </div>
     </header>
 
-    <!-- Main -->
     <main class="container">
 
-        <!-- Upload section -->
-        <section id="upload-section" class="card upload-card">
-            <h2>Analyse an Image</h2>
-            <p class="subtitle">Upload a photo or image to detect AI generation using forensic analysis.</p>
+        <!-- ── Upload section ─────────────────────────────────── -->
+        <section id="upload-section" aria-label="Image upload">
 
-            <div id="drop-zone" class="drop-zone" tabindex="0" role="button" aria-label="Image upload area. Click or drag a file here.">
-                <div class="drop-zone-inner">
-                    <div class="upload-icon">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Hero -->
+            <div class="hero">
+                <p class="hero-eyebrow">AI Image Forensics</p>
+                <h1>Telling Real<br>From Synthetic</h1>
+                <p>Analyze an image for signs of AI generation using machine learning,
+                   robustness checks, visual explanations, and provenance signals.</p>
+                <span class="trust-line" role="note">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <circle cx="8" cy="8" r="6.5"/>
+                        <line x1="8" y1="5" x2="8" y2="9"/>
+                        <circle cx="8" cy="11.5" r="0.5" fill="currentColor"/>
+                    </svg>
+                    Analysis is automated. Results are probabilistic, not proof of origin.
+                </span>
+            </div>
+
+            <div class="upload-card">
+                <div class="upload-card-header">
+                    <h2>Analyze an image</h2>
+                    <p class="subtitle">Drag and drop, or browse to select a file.</p>
+                </div>
+
+                <!-- Drop zone -->
+                <div id="drop-zone" class="drop-zone" tabindex="0" role="button"
+                     aria-label="Image upload area. Click or drag a file here.">
+                    <div class="upload-icon" aria-hidden="true">
+                        <svg width="44" height="44" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="16 16 12 12 8 16"></polyline>
                             <line x1="12" y1="12" x2="12" y2="21"></line>
                             <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
                         </svg>
                     </div>
-                    <p class="drop-text">Drag &amp; drop or <span class="link-text">browse</span></p>
+                    <p class="drop-text">Drop an image here, or <span class="link-text">browse</span></p>
                     <p class="drop-sub">JPEG · PNG · WebP · BMP · Max 20 MB</p>
+                    <!-- accept="image/*" enables camera on mobile -->
+                    <input type="file" id="file-input"
+                           accept="image/jpeg,image/png,image/webp,image/bmp,image/tiff,image/*"
+                           hidden>
                 </div>
-                <!-- accept="image/*" enables camera on mobile -->
-                <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp,image/bmp,image/tiff,image/*" hidden capture="">
-            </div>
 
-            <!-- Preview -->
-            <div id="preview-section" class="preview-section hidden">
-                <img id="preview-img" class="preview-img" alt="Preview of uploaded image" src="">
-                <div class="preview-meta">
-                    <span id="preview-name" class="meta-name"></span>
-                    <span id="preview-size" class="meta-size"></span>
+                <!-- Image preview -->
+                <div id="preview-section" class="preview-section hidden" aria-live="polite">
+                    <img id="preview-img" class="preview-img" alt="Preview of selected image" src="">
+                    <div class="preview-meta">
+                        <div class="meta-name" id="preview-name"></div>
+                        <div class="meta-size" id="preview-size"></div>
+                    </div>
+                    <button id="change-btn" class="btn btn-ghost" aria-label="Change selected image">
+                        Change image
+                    </button>
                 </div>
-                <button id="change-btn" class="btn btn-ghost">Change image</button>
-            </div>
 
-            <!-- Options -->
-            <div class="options-row">
-                <label class="option-label">
-                    <input type="checkbox" id="opt-stress" checked>
-                    Robustness probes
-                </label>
-                <label class="option-label">
-                    <input type="checkbox" id="opt-gradcam" checked>
-                    Attention map
-                </label>
-                <label class="option-label">
-                    <input type="checkbox" id="opt-provenance" checked>
-                    Metadata analysis
-                </label>
-            </div>
-
-            <button id="analyze-btn" class="btn btn-primary" disabled>
-                <span>Analyse Image</span>
-            </button>
-
-            <p class="upload-note">Analysis typically takes 5–15 seconds. All processing happens server-side — your image is not stored permanently.</p>
-        </section>
-
-        <!-- Loading state -->
-        <section id="loading-section" class="card hidden loading-card">
-            <div class="spinner"></div>
-            <h3>Analysing…</h3>
-            <p id="loading-step" class="loading-step">Running detector…</p>
-            <div class="loading-steps">
-                <div class="step" id="step-detect">Detector</div>
-                <div class="step" id="step-cal">Calibration</div>
-                <div class="step" id="step-probe">5 Probes</div>
-                <div class="step" id="step-explain">Attention</div>
-                <div class="step" id="step-prov">Metadata</div>
-            </div>
-        </section>
-
-        <!-- Result section -->
-        <section id="result-section" class="card hidden">
-
-            <!-- Verdict banner -->
-            <div id="verdict-banner" class="verdict-banner">
-                <div class="verdict-icon" id="verdict-icon">?</div>
-                <div class="verdict-text">
-                    <h2 id="verdict-label">Unknown</h2>
-                    <p id="verdict-sublabel" class="verdict-sublabel"></p>
+                <!-- Analysis options -->
+                <div class="options-row" role="group" aria-label="Analysis options">
+                    <label class="option-label">
+                        <input type="checkbox" id="opt-stress" checked>
+                        Robustness checks
+                    </label>
+                    <label class="option-label">
+                        <input type="checkbox" id="opt-gradcam" checked>
+                        Visual explanation
+                    </label>
+                    <label class="option-label">
+                        <input type="checkbox" id="opt-provenance" checked>
+                        Metadata analysis
+                    </label>
                 </div>
-                <div class="verdict-prob">
-                    <div class="prob-value" id="prob-display">—</div>
-                    <div class="prob-label">AI probability</div>
-                </div>
-            </div>
 
-            <!-- Probability bar -->
-            <div class="prob-bar-container">
-                <div class="prob-bar-label-left">← Real</div>
-                <div class="prob-bar-track">
-                    <div id="prob-bar-fill" class="prob-bar-fill"></div>
-                    <div id="prob-bar-marker" class="prob-bar-marker"></div>
-                </div>
-                <div class="prob-bar-label-right">AI-Generated →</div>
-            </div>
-            <p class="bar-note">Temperature-calibrated probability (T=2.876). 50% = maximum uncertainty.</p>
+                <button id="analyze-btn" class="btn btn-primary" disabled aria-label="Start image analysis">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    Analyze image
+                </button>
 
-            <!-- Metric grid -->
-            <div class="metric-grid">
-                <div class="metric-card">
-                    <div class="metric-value" id="m-raw">—</div>
-                    <div class="metric-label">Raw score</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value" id="m-cal">—</div>
-                    <div class="metric-label">Calibrated</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value" id="m-stability">—</div>
-                    <div class="metric-label">Stability</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value" id="m-probes">—</div>
-                    <div class="metric-label">Probes OK</div>
-                </div>
-            </div>
-
-            <!-- Probe details -->
-            <div id="probes-section" class="sub-section">
-                <h3>Robustness Probes</h3>
-                <p class="sub-desc">Each probe applies a real-world image transformation (compression, resize) and re-runs the detector. High stability means the verdict is consistent across conditions.</p>
-                <div class="table-scroll">
-                <table id="probe-table" class="probe-table">
-                    <thead>
-                        <tr><th>Probe</th><th>Status</th><th>Raw P</th><th>Calibrated P</th><th>Time</th></tr>
-                    </thead>
-                    <tbody id="probe-tbody"></tbody>
-                </table>
-                </div>
-                <p class="note" id="threshold-note"></p>
-            </div>
-
-            <!-- Grad-CAM -->
-            <div id="gradcam-section" class="sub-section hidden">
-                <h3>Model Evidence Map (Grad-CAM)</h3>
-                <p class="sub-desc">
-                    This heatmap shows which regions of the image most influenced the model's prediction.
-                    <strong>Red/yellow = higher influence · Blue = lower influence.</strong>
-                    This is a model explanation tool — it shows where the model looked, not proof of manipulation.
+                <p class="upload-note">
+                    Analysis takes 5–30 seconds. Processing is server-side — images are not stored permanently.
                 </p>
-                <div class="gradcam-container">
-                    <div class="gradcam-col">
-                        <p class="img-label">Original</p>
-                        <img id="original-img-display" class="gradcam-img" alt="Original uploaded image">
+            </div>
+        </section>
+
+        <!-- ── Loading state ──────────────────────────────────── -->
+        <section id="loading-section" class="loading-card hidden" aria-label="Analysis in progress" aria-live="polite">
+            <h3>Analyzing your image</h3>
+            <p id="loading-step" class="loading-step">Starting analysis…</p>
+
+            <div class="analysis-steps" role="list">
+                <div class="step-item" id="step-received" role="listitem">
+                    <div class="step-dot" aria-hidden="true">✓</div>
+                    <div class="step-label">Image received</div>
+                </div>
+                <div class="step-item" id="step-detect" role="listitem">
+                    <div class="step-dot" aria-hidden="true">...</div>
+                    <div class="step-label">Visual analysis</div>
+                </div>
+                <div class="step-item" id="step-probe" role="listitem">
+                    <div class="step-dot" aria-hidden="true">...</div>
+                    <div class="step-label">Robustness checks</div>
+                </div>
+                <div class="step-item" id="step-explain" role="listitem">
+                    <div class="step-dot" aria-hidden="true">...</div>
+                    <div class="step-label">Visual evidence</div>
+                </div>
+                <div class="step-item" id="step-prov" role="listitem">
+                    <div class="step-dot" aria-hidden="true">...</div>
+                    <div class="step-label">Provenance</div>
+                </div>
+                <div class="step-item" id="step-cal" role="listitem">
+                    <div class="step-dot" aria-hidden="true">...</div>
+                    <div class="step-label">Final assessment</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Result section ─────────────────────────────────── -->
+        <section id="result-section" class="result-section hidden" aria-label="Analysis results" aria-live="polite">
+
+            <!-- ①  Assessment hero ──────────────────────────── -->
+            <div class="assessment-card" id="assessment-card">
+
+                <!-- Verdict -->
+                <div id="verdict-banner" class="assessment-verdict-bar">
+                    <p class="verdict-eyebrow">SignalScope Assessment</p>
+                    <h2 id="verdict-label" class="verdict-headline">Unknown</h2>
+                    <p id="verdict-explanation" class="verdict-explanation"></p>
+                </div>
+
+                <!-- Confidence + Reliability -->
+                <div class="assessment-metrics">
+                    <div class="metric-block">
+                        <div class="metric-block-label">Model Confidence</div>
+                        <div class="metric-block-value" id="prob-display">—</div>
+                        <div class="metric-block-sub" id="prob-sublabel">Calibrated probability</div>
                     </div>
-                    <div class="gradcam-col">
-                        <p class="img-label">Attention Overlay</p>
-                        <img id="gradcam-overlay" class="gradcam-img" alt="Grad-CAM attention heatmap overlay">
+                    <div class="metric-block">
+                        <div class="metric-block-label">Reliability</div>
+                        <div id="reliability-pill-wrap" style="margin-bottom:4px;"></div>
+                        <div class="metric-block-sub" id="reliability-sub">
+                            How stable the result is across transformations
+                        </div>
                     </div>
                 </div>
-                <p class="note" id="gradcam-layer-note"></p>
+
+                <!-- Probability bar -->
+                <div class="prob-bar-section">
+                    <div class="prob-bar-row">
+                        <span class="prob-bar-label left">Authentic</span>
+                        <div class="prob-bar-track" role="meter" aria-label="AI probability" aria-valuemin="0" aria-valuemax="100">
+                            <div id="prob-bar-fill" class="prob-bar-fill" style="width:50%"></div>
+                            <div id="prob-bar-marker" class="prob-bar-marker" style="left:50%" aria-hidden="true"></div>
+                        </div>
+                        <span class="prob-bar-label right">AI-Generated</span>
+                    </div>
+                    <p class="bar-caption" id="bar-caption">Temperature-calibrated probability. 50% = maximum uncertainty.</p>
+                </div>
             </div>
 
-            <!-- Provenance -->
-            <div id="provenance-section" class="sub-section">
-                <h3>Image Metadata (Provenance)</h3>
-                <div id="provenance-content"></div>
-                <p class="note important-note">⚠ Absence of metadata is <strong>NOT</strong> evidence of AI generation. Many real photographs have EXIF stripped by social media platforms.</p>
+            <!-- ②  Why this result? ────────────────────────── -->
+            <div class="section-card" id="explanation-card">
+                <div class="section-header">
+                    <div>
+                        <div class="section-title">Why this result?</div>
+                        <div class="section-subtitle">Evidence from the analysis, based only on actual model outputs.</div>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <ul id="evidence-list" class="evidence-list" aria-label="Evidence list"></ul>
+                </div>
             </div>
 
-            <!-- Reliability / Uncertainty -->
-            <div class="sub-section">
-                <h3>Reliability Assessment</h3>
-                <div id="reliability-content" class="reliability-content"></div>
+            <!-- ③  Visual evidence (Grad-CAM) ──────────────── -->
+            <div class="section-card hidden" id="gradcam-section">
+                <div class="section-header">
+                    <div>
+                        <div class="section-title">Visual evidence</div>
+                        <div class="section-subtitle">Where the model's visual analysis was most concentrated.</div>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="gradcam-grid">
+                        <div>
+                            <div class="gradcam-col-label">Original image</div>
+                            <div class="gradcam-img-wrap">
+                                <img id="original-img-display" class="gradcam-img" alt="Original uploaded image">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="gradcam-col-label">Model attention</div>
+                            <div class="gradcam-img-wrap">
+                                <img id="gradcam-overlay" class="gradcam-img" alt="Heatmap showing which image regions most influenced the model">
+                            </div>
+                        </div>
+                    </div>
+                    <p class="gradcam-caption">
+                        Highlighted regions show where the model concentrated its analysis.
+                        This is an explanation tool — it shows where the model looked, not proof of manipulation.
+                    </p>
+                    <div class="gradcam-legend" aria-hidden="true">
+                        <span>Low influence</span>
+                        <div class="legend-bar"></div>
+                        <span>High influence</span>
+                        <span style="margin-left:auto;font-style:italic;" id="gradcam-layer-note"></span>
+                    </div>
+                </div>
             </div>
 
-            <!-- Disclaimer -->
-            <div class="disclaimer-box">
-                <strong>Scientific Limitations</strong>
+            <!-- ④  Robustness checks ─────────────────────── -->
+            <div class="section-card" id="probes-section">
+                <div class="section-header">
+                    <div>
+                        <div class="section-title">Robustness checks</div>
+                        <div class="section-subtitle">
+                            Tests whether the conclusion changes when the image is slightly altered.
+                        </div>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="robustness-summary" id="robustness-summary">
+                        <div>
+                            <div class="probe-summary-count" id="probe-count-display">—</div>
+                            <div class="probe-summary-text" id="probe-summary-text">probes completed</div>
+                        </div>
+                        <div style="flex:1;">
+                            <p class="body-sm" id="stability-summary-text"></p>
+                        </div>
+                    </div>
+                    <div class="probe-list" id="probe-list" role="list" aria-label="Robustness probe results"></div>
+                    <p class="probe-note" id="threshold-note"></p>
+                </div>
+            </div>
+
+            <!-- ⑤  Image provenance ──────────────────────── -->
+            <div class="section-card" id="provenance-section">
+                <div class="section-header">
+                    <div>
+                        <div class="section-title">Image provenance</div>
+                        <div class="section-subtitle">Metadata and origin signals found in the file.</div>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div id="provenance-content"></div>
+                </div>
+            </div>
+
+            <!-- ⑥  Technical details (expandable) ──────────── -->
+            <div class="section-card">
+                <div class="section-header">
+                    <button class="tech-details-toggle" id="tech-toggle"
+                            aria-expanded="false" aria-controls="tech-body">
+                        <span class="tech-toggle-label">Technical details</span>
+                        <span class="tech-toggle-icon" id="tech-icon" aria-hidden="true">▾</span>
+                    </button>
+                </div>
+                <div id="tech-body" class="section-body" hidden>
+                    <div class="tech-body" id="tech-content"></div>
+                </div>
+            </div>
+
+            <!-- ⑦  Scientific limitations ───────────────────── -->
+            <div class="disclaimer-card" role="note" aria-label="Scientific limitations">
+                <strong>Scientific limitations</strong>
                 <ul>
-                    <li>Trained on CIFAKE (Stable Diffusion v1.4 only). Results may not generalise to DALL-E, Midjourney, Firefly, or other generators.</li>
+                    <li>Trained on CIFAKE (Stable Diffusion v1.4). Results may not generalise to DALL·E, Midjourney, Firefly, or other generators.</li>
                     <li>The calibrated probability is a statistical estimate, not a deterministic label. Values near 50% indicate high uncertainty.</li>
-                    <li>Temperature calibration (T=2.876) reduces overconfidence on validation data — it does not guarantee real-world accuracy.</li>
+                    <li>Temperature calibration (T=2.876) reduces overconfidence — it does not guarantee real-world accuracy.</li>
                     <li>Robustness probes test stability under JPEG/resize transforms, not generator diversity.</li>
                     <li>Do not use this system as the sole basis for consequential decisions.</li>
                 </ul>
             </div>
 
-            <!-- Feedback -->
-            <div class="feedback-section" id="feedback-section">
-                <h3>Was this result correct?</h3>
-                <p class="sub-desc">Your feedback helps identify failure cases for future analysis. <strong>It does not automatically retrain the model.</strong></p>
-                <div class="feedback-btns">
-                    <button class="btn btn-feedback btn-correct" data-verdict="correct">✓ Correct</button>
-                    <button class="btn btn-feedback btn-incorrect" data-verdict="incorrect">✗ Incorrect</button>
-                    <button class="btn btn-feedback btn-unsure" data-verdict="unsure">? Unsure</button>
+            <!-- ⑧  User feedback ─────────────────────────── -->
+            <div class="feedback-card" id="feedback-section">
+                <h3>Was this result helpful?</h3>
+                <p>Your feedback helps identify failure cases for future analysis. <strong>It does not automatically retrain the model.</strong></p>
+                <div class="feedback-btns" role="group" aria-label="Verdict feedback">
+                    <button class="btn btn-feedback btn-correct" data-verdict="correct" aria-pressed="false">
+                        ✓&nbsp; Correct
+                    </button>
+                    <button class="btn btn-feedback btn-incorrect" data-verdict="incorrect" aria-pressed="false">
+                        ✗&nbsp; Incorrect
+                    </button>
+                    <button class="btn btn-feedback btn-unsure" data-verdict="unsure" aria-pressed="false">
+                        ?&nbsp; Unsure
+                    </button>
                 </div>
-                <textarea id="feedback-comment" class="feedback-comment" placeholder="Optional: describe what was wrong or unexpected…" rows="2"></textarea>
-                <button id="submit-feedback-btn" class="btn btn-ghost hidden">Submit feedback</button>
-                <p id="feedback-status" class="feedback-status"></p>
+                <textarea id="feedback-comment" class="feedback-comment"
+                          placeholder="Optional: describe what was wrong or unexpected…"
+                          rows="2" aria-label="Additional feedback comment"></textarea>
+                <button id="submit-feedback-btn" class="btn btn-ghost hidden" aria-label="Submit feedback">
+                    Submit feedback
+                </button>
+                <p id="feedback-status" class="feedback-status" aria-live="polite"></p>
             </div>
 
-            <!-- Analyse another -->
+            <!-- ⑨  Actions ──────────────────────────────────── -->
             <div class="actions-row">
-                <button id="new-analysis-btn" class="btn btn-primary">Analyse Another Image</button>
+                <button id="new-analysis-btn" class="btn btn-primary">
+                    Analyze another image
+                </button>
                 <span class="analysis-id-note" id="analysis-id-note"></span>
             </div>
 
         </section>
 
-        <!-- Error section -->
-        <section id="error-section" class="card hidden error-card">
-            <div class="error-icon">⚠</div>
-            <h3 id="error-title">Analysis Failed</h3>
+        <!-- ── Error state ────────────────────────────────────── -->
+        <section id="error-section" class="error-card hidden" aria-label="Error" aria-live="assertive">
+            <div class="error-icon" aria-hidden="true">⚠</div>
+            <h3 id="error-title">Analysis failed</h3>
             <p id="error-message"></p>
-            <p class="error-hint">If the problem persists, the server may be starting up. Please wait 10 seconds and try again.</p>
-            <button id="retry-btn" class="btn btn-primary">Try Again</button>
+            <p class="error-hint">If the problem persists, the server may be starting up. Please wait a moment and try again.</p>
+            <button id="retry-btn" class="btn btn-accent">Try again</button>
         </section>
 
     </main>
@@ -237,9 +358,10 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>SignalScope — SIH 2026 · EfficientNet-B0 · CIFAKE baseline · In-distribution evaluation only</p>
-            <p class="footer-note">Not a certified forensic detection system. Do not use for legal or evidentiary purposes.</p>
-            <p class="footer-note">Baseline: Val ROC-AUC 0.9316 · Acc 84.63% · Calibrated ECE 0.048 (Stable Diffusion v1.4, in-distribution)</p>
+            <p class="footer-name">SignalScope</p>
+            <p>AI image analysis with calibrated confidence, robustness testing, explainability, and provenance signals.</p>
+            <p>SIH 2026 · EfficientNet-B0 · CIFAKE baseline · Val ROC-AUC 0.9316 · Acc 84.63%</p>
+            <p class="footer-disclaimer">Results are probabilistic and should not be treated as definitive proof of image origin. Not a certified forensic system.</p>
         </div>
     </footer>
 
